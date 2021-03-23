@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-def getSubjectData(Data,addPrev):
+def getSubjectData(Data,num_variables):
     CData = np.array(Data['CData'])
     sub_data = pd.DataFrame()
 
@@ -28,7 +28,7 @@ def getSubjectData(Data,addPrev):
     sub_data=sub_data.reset_index(drop=True)
 
     # add previous response as a variable, comment this out if not used
-    if addPrev==1:
+    if num_variables=='prevresp':
         sub_data["prev_resp"]=np.nan
         sub_data.loc[1:,"prev_resp"]=sub_data["response"][:-1].to_numpy()
         # trim off the first trial
@@ -132,7 +132,7 @@ def getData_6(sub_data):
         y = np.array(sub_data['response'])
     )
     
-    weights = {'bias' : 0, 'probed_Ch_L' : 1, 'probed_Ch_R' : 1, 'unprobed_Ch_L' : 1, 'unprobed_Ch_R' : 1, 'probe_L' : 1, 'probe_R' : 1}
+    weights = {'probed_Ch_L' : 1, 'probed_Ch_R' : 1, 'unprobed_Ch_L' : 1, 'unprobed_Ch_R' : 1, 'probe_L' : 1, 'probe_R' : 1}
 
     return dat, weights
 

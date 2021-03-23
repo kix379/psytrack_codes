@@ -37,8 +37,8 @@ def sep_plot(wMode, W_std, weights, xlim, ylim, filename, title):
 		for i in [first,first+1]:
 			color = next(ax._get_lines.prop_cycler)['color']
 			plt.plot(wMode[i], c=color, lw=1, linestyle='-', alpha=0.85, zorder=2*i+1, label=legendNames[i])
-			plt.fill_between(np.arange(len(wMode[i])), wMode[i] - 2 * W_std[i], wMode[i] + 2 * W_std[i],
-                     facecolor=color, alpha=0.2, zorder=2*i)
+			#plt.fill_between(np.arange(len(wMode[i])), wMode[i] - 2 * W_std[i], wMode[i] + 2 * W_std[i],
+            #         facecolor=color, alpha=0.2, zorder=2*i)
 			plt.axhline(0, color="black", linestyle="--", lw=0.5, alpha=0.5, zorder=0)
 			plt.xticks(50*np.arange(0,xlim[1]/50 + 1))
 			plt.yticks(np.arange(-2,3,2))
@@ -50,7 +50,7 @@ def sep_plot(wMode, W_std, weights, xlim, ylim, filename, title):
 			plt.ylabel("weights")
 			plt.legend(loc ="lower right") 
 
-	plt.title(title)
+	plt.suptitle(title)
 	plt.savefig(filename+'.png')
 	plt.show()
 
@@ -99,7 +99,7 @@ def to_plot_behavior(feedback_data,indices,xlim_val,ylim_val,wMode,weights,step,
 		'ylim': [-2,2.5],
 		'ylabel': 'bcc'
 	}
-	plot_weights_behavior(wMode,weights,params_1,params_2,step,SPATH+img_filename+'_bcc_probe_window_'+str(window)+'.png','Subject 2 EQFB')
+	plot_weights_behavior(wMode,weights,params_1,params_2,step,SPATH+img_filename+'_bcc_probe_window_'+str(window)+'.png',img_title)
 
 	params_2={
 		'line_1':left_c,
@@ -110,7 +110,7 @@ def to_plot_behavior(feedback_data,indices,xlim_val,ylim_val,wMode,weights,step,
 		'ylim': [-2,2.5],
 		'ylabel': 'criterion'
 	}
-	plot_weights_behavior(wMode,weights,params_1,params_2,step,SPATH+img_filename+'_criterion_window_'+str(window)+'.png','Subject 2 EQFB')
+	plot_weights_behavior(wMode,weights,params_1,params_2,step,SPATH+img_filename+'_criterion_window_'+str(window)+'.png',img_title)
 
 
 #plot dprime and probed_ch

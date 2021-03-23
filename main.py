@@ -12,23 +12,19 @@ from helper import *
 
 
 ################### Modifiable variables ####################
-subject_num=1
+subject_num=2
 task='freeform'
-num_variables='6'
-sigma=-5
+num_variables='4'
+sigma=5
 
 #cross validation
-do_cv=1
+do_cv=0
 k=5
-cv_single_plot=0
-
-# for adding previous response as a variable
-addPrev=0
 
 #behavioral
-plot_behavior=0
+plot_behavior=1
 window=50 #for dprime calc
-step=50 #for dotted black lines
+step=100 #for dotted black lines
 
 # Set save path for all figures, decide whether to save permanently
 SPATH = "C:\\Users\\Cognition-Lab\\Documents\\Kruttika_files\\Plots\\psytrack\\subject00"+str(subject_num)+"\\"+task+"\\"
@@ -42,7 +38,7 @@ Data = scipy.io.loadmat(datapath + '\\sub_00'+str(subject_num)+'_'+task+'.mat')
 if not os.path.exists(SPATH):
    	os.makedirs(SPATH)
 	
-sub_data=getSubjectData(Data,addPrev)
+sub_data=getSubjectData(Data,num_variables)
 
 outData, weights = getData(sub_data,num_variables)
 K = np.sum([weights[i] for i in weights.keys()])
@@ -70,11 +66,13 @@ else:
 img_filename=task+'_'+num_variables+'_input_sigma_'+str(sigma)
 img_title='Subject '+str(subject_num)+' '+task
 standard_plot(wMode, W_std, weights,[0,xlim_val], [-ylim_val,ylim_val], SPATH+img_filename, img_title)
+if num_variables=='4' or num_variables=='6':
+	sep_plot(wMode, W_std, weights,[0,xlim_val], [-ylim_val,ylim_val], SPATH+img_filename+'_sep', img_title)
 
 
 if do_cv==1:
 	num=wMode.shape[1]-wMode.shape[1]%k
-	perform_cross_validation(outData,num,hyper_guess,weights,optList,k,cv_single_plot,SPATH+img_filename+'_trimmed', img_title+ ' ' +str(num)+' trials',xlim_val,ylim_val)
+	perform_cross_validation(outData,num,hyper_guess,weights,optList,k,num_variables,SPATH+img_filename+'_trimmed', img_title+ ' ' +str(num)+' trials',xlim_val,ylim_val)
 
 if plot_behavior==1:
 	feedback_data = scipy.io.loadmat(datapath + '\\'+task+'\\feedback_vals_window_'+str(window)+'.mat')
