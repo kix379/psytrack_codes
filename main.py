@@ -12,9 +12,9 @@ from helper import *
 
 
 ################### Modifiable variables ####################
-subject_num=2
+subject_num=1
 task='freeform'
-num_variables='4'
+num_variables='6'
 sigma=5
 
 #cross validation
@@ -24,7 +24,7 @@ k=5
 #behavioral
 plot_behavior=1
 window=50 #for dprime calc
-step=100 #for dotted black lines
+step=100#for dotted black lines
 
 # Set save path for all figures, decide whether to save permanently
 SPATH = "C:\\Users\\Cognition-Lab\\Documents\\Kruttika_files\\Plots\\psytrack\\subject00"+str(subject_num)+"\\"+task+"\\"
