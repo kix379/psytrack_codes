@@ -24,7 +24,7 @@ def standard_plot(wMode, W_std, weights, xlim, ylim, filename,title):
 	plt.legend(legendNames, loc ="lower right")
 	plt.title(title) 
 	plt.savefig(filename+'.png')
-	plt.show()
+	#plt.show()
 
 def sep_plot(wMode, W_std, weights, xlim, ylim, filename, title):
 	
@@ -52,7 +52,7 @@ def sep_plot(wMode, W_std, weights, xlim, ylim, filename, title):
 
 	plt.suptitle(title)
 	plt.savefig(filename+'.png')
-	plt.show()
+	#plt.show()
 
 def to_plot_behavior(feedback_data,indices,xlim_val,ylim_val,wMode,weights,step,SPATH,img_filename,window,img_title):
 	#plot with dprime, bcc, criterion
@@ -67,8 +67,8 @@ def to_plot_behavior(feedback_data,indices,xlim_val,ylim_val,wMode,weights,step,
 
 
 	params_1={
-		'line_1_index':indices['probe_Ch_L'],
-		'line_2_index':indices['probe_Ch_R'],
+		'line_1_index':indices['probed_Ch_L'],
+		'line_2_index':indices['probed_Ch_R'],
 		'xlim': [0,xlim_val],
 		'ylim': [-ylim_val,ylim_val]
 	}
