@@ -4,6 +4,7 @@ import os
 import numpy as np
 import pandas as pd
 import scipy.io
+from statistics import NormalDist
 import psytrack as psy
 from plotting_functions import *
 from construct_input import *
@@ -114,5 +115,66 @@ def modelling(subject_num,task,num_variables,sigma,do_plots,do_cv,k,window,step,
 		'Cross validated log-likelihood' : xval_logli
 	}
 	
-	return values
+	return values, outData, wMode, weights
 	
+
+def computeFeedbackPeriodic(resp_probe_side,change_info,response_key):
+
+	left_probe_contingency =[[0,0],[0,0]];
+	right_probe_contingency = [[0,0],[0,0]];
+
+	for i in range(len(response_key)):
+		if resp_probe_side[i]==-1: 		#probe left
+			if change_info[i]==-1 or change_info[i]==2: 	#change left or both
+				if response_key[i]==1: 		#response yes, left probe hit
+					left_probe_contingency[0][0]=left_probe_contingency[0][0]+1;
+				elif response_key[i]==0:		#response no, left probe miss
+					left_probe_contingency[0][1]=left_probe_contingency[0][1]+1;
+			
+			if change_info[i]==1 or change_info[i]==0:		#change right or no change
+				if response_key[i]==1: 		#response yes, left probe false alarm
+					left_probe_contingency[1][0]=left_probe_contingency[1][0]+1;
+				elif response_key[i]==0: 		#response no, left probe correct rejection
+					left_probe_contingency[1][1]=left_probe_contingency[1][1]+1;
+
+		elif resp_probe_side[i]==1: 	#probe right
+			if change_info[i]==1 or change_info[i]==2: 	#change right or both
+				if response_key[i]==1: 		#response yes, right probe hit
+					right_probe_contingency[0][0]=right_probe_contingency[0][0]+1;
+				elif response_key[i]==0: 	#response no, right probe miss
+					right_probe_contingency[0][1]=right_probe_contingency[0][1]+1;
+			if change_info[i]==-1 or change_info[i]==0:
+				if response_key[i]==1:		#response yes, right probe false alarm
+					right_probe_contingency[1][0]=right_probe_contingency[1][0]+1;
+				elif response_key[i]==0: 	#response no, right probe correct rejection
+					right_probe_contingency[1][1]=right_probe_contingency[1][1]+1;
+	
+	to_replace=0.5;
+	for i in range(len(left_probe_contingency)):
+		for j in range(len(left_probe_contingency[0])):
+			if left_probe_contingency[i][j]==0:
+				left_probe_contingency[i][j]=to_replace;
+			if right_probe_contingency[i][j]==0:
+				right_probe_contingency[i][j]=to_replace;
+
+	print(left_probe_contingency)
+	lp_hit_rate=left_probe_contingency[0][0]/(left_probe_contingency[0][0]+left_probe_contingency[0][1]);
+	lp_false_alarm_rate=left_probe_contingency[1][0]/(left_probe_contingency[1][0]+left_probe_contingency[1][1]);
+	rp_hit_rate=right_probe_contingency[0][0]/(right_probe_contingency[0][0]+right_probe_contingency[0][1]);
+	rp_false_alarm_rate=right_probe_contingency[1][0]/(right_probe_contingency[1][0]+right_probe_contingency[1][1]);
+	
+	a=NormalDist().inv_cdf(lp_false_alarm_rate)
+	b=NormalDist().inv_cdf(lp_hit_rate)
+
+	lp_d = b-a;
+	lp_c = -a;
+	lp_bcc = lp_c - (lp_d/2);
+
+	a=NormalDist().inv_cdf(rp_false_alarm_rate)
+	b=NormalDist().inv_cdf(rp_hit_rate)
+
+	rp_d = b-a;
+	rp_c = -a;
+	rp_bcc = lp_c - (lp_d/2);
+
+	return lp_d,lp_c,lp_bcc,rp_d,rp_c,rp_bcc		
